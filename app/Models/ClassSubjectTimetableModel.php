@@ -15,7 +15,7 @@ class ClassSubjectTimetableModel extends Model
         $return =  ClassSubjectTimetableModel::where('class_id', '=', $class_id)
         ->where('subject_id', '=', $subject_id)
         ->where('week_id', '=', $week_id)->first();
-        dd($class_id ,$subject_id ,$week_id ,$return);
+        // dd($class_id ,$subject_id ,$week_id ,$return);
         return $return;
     }
 }

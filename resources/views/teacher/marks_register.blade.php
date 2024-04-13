@@ -25,8 +25,8 @@
                                     <select class="form-control" name="exam_id" required>
                                         <option value="">Select</option>
                                         @foreach ($getExam as $exam)
-                                            <option {{ Request::get('exam_id') == $exam->id ? 'selected' : '' }}
-                                                value="{{ $exam->id }}">{{ $exam->name }}</option>
+                                            <option {{ Request::get('exam_id') == $exam->exam_id ? 'selected' : '' }}
+                                                value="{{ $exam->exam_id }}">{{ $exam->exam_name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -34,8 +34,8 @@
                                     <select class="form-control" name="class_id" required>
                                         <option value="">Select</option>
                                         @foreach ($getClass as $class)
-                                            <option {{ Request::get('class_id') == $class->id ? 'selected' : '' }}
-                                                value="{{ $class->id }}">{{ $class->name }}</option>
+                                            <option {{ Request::get('class_id') == $class->class_id ? 'selected' : '' }}
+                                                value="{{ $class->class_id }}">{{ $class->class_name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -43,8 +43,7 @@
                                 <div
                                     class="form-group col-md-3 d-flex align-items-md-end justify-content-md-start justify-content-sm-center">
                                     <button type="submit" class="btn btn-primary mr-1">Search</button>
-                                    <a href="{{ url('admin/examinations/marks_register') }}"
-                                        class="btn btn-success">Clear</a>
+                                    <a href="{{ url('teacher/marks_register') }}" class="btn btn-success">Clear</a>
                                 </div>
                             </div>
                         </div>
@@ -115,16 +114,9 @@
                                                             }
                                                             $totleStudentMark = $totleStudentMark + $totleMark;
                                                         @endphp
-
                                                         <td>
                                                             <div class="mb-2">
                                                                 Class Work
-                                                                <input type="hidden"
-                                                                    name="mark[{{ $i }}][full_marks]"
-                                                                    value="{{ $subject->full_makes }}">
-                                                                <input type="hidden"
-                                                                    name="mark[{{ $i }}][passing_mark]"
-                                                                    value="{{ $subject->passing_marks }}">
                                                                 <input type="hidden"
                                                                     name="mark[{{ $i }}][subject_id]"
                                                                     value="{{ $subject->subject_id }}">
@@ -178,6 +170,15 @@
                                                                     <br>
                                                                     <b>Passing Mark : </b>{{ $subject->passing_marks }}
                                                                     <br>
+                                                                    @php
+                                                                        $getLoopGrade = App\Models\MarksGradeModel::getGrade(
+                                                                            $totleMark,
+                                                                        );
+                                                                    @endphp
+                                                                    @if (!empty($getLoopGrade))
+                                                                        <b>Grade : </b>{{ $getLoopGrade }}
+                                                                        <br>
+                                                                    @endif
                                                                     @if ($totleMark >= $subject->passing_marks)
                                                                         <span
                                                                             style="color: green;font-weight: bold">Pass</span>
@@ -208,19 +209,18 @@
                                                                 <br>
                                                                 Totle Passing Mark : {{ $totlePassingMark }}
                                                                 <br>
-                                                                
+
                                                                 @php
-                                                                    $precentage =
-                                                                        ($totleStudentMark * 100) / $totleFullMark;
-                                                                    $grade = App\Models\MarksGradeModel::getGrade(
+                                                                    $precentage = ($totleStudentMark * 100) / $totleFullMark;
+                                                                    $getGrade = App\Models\MarksGradeModel::getGrade(
                                                                         $precentage,
                                                                     );
                                                                 @endphp
                                                                 <br>
                                                                 <b>Percentage : </b>{{ round($precentage, 2) }}%
                                                                 <br>
-                                                                @if (!empty($grade))
-                                                                    <b>Grade : </b>{{ $grade }}
+                                                                @if (!empty($getGrade))
+                                                                    <b>Grade : </b>{{ $getGrade }}
                                                                     <br>
                                                                 @endif
 
@@ -254,11 +254,10 @@
                 e.preventDefault();
                 $.ajax({
                     type: "POST",
-                    url: "{{ url('admin/examinations/submit_makes_register') }}",
+                    url: "{{ url('teacher/submit_makes_register') }}",
                     data: $(this).serialize(),
                     dataType: "json",
                     success: function(data) {
-                        // console.log(response);
                         alert(data.message)
                     },
                     error: function(jqXHR, textStatus, errorThrown) {
@@ -270,7 +269,7 @@
         });
         $(document).ready(function() {
             $('.SaveSingleSubject').click(function(e) {
-                e.preventDefault();
+
                 var student_id = $(this).attr('id');
                 var subject_id = $(this).attr('data-val');
                 var exam_id = $(this).attr('data-exam');
@@ -281,10 +280,10 @@
                 var test_work = $('#test_work_' + student_id + subject_id).val();
                 var exam = $('#exam_' + student_id + subject_id).val();
 
-
+                e.preventDefault();
                 $.ajax({
                     type: "POST",
-                    url: "{{ url('admin/examinations/single_submit_makes_register') }}",
+                    url: "{{ url('teacher/single_submit_makes_register') }}",
                     data: {
                         "_token": "{{ csrf_token() }}",
                         id: id,
@@ -299,7 +298,6 @@
                     },
                     dataType: "json",
                     success: function(data) {
-                        // console.log(response);
                         alert(data.message)
                     },
                     error: function(jqXHR, textStatus, errorThrown) {

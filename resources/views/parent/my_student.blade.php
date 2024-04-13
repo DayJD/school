@@ -90,8 +90,10 @@
                                                 class="btn btn-sm btn-success">My Subject</a>
                                             <a href="{{ url('parent/exam_timetable/' . $value->id) }} "
                                                 class="btn btn-sm btn-primary">Exam Timetable</a>
-
-                                            <a href="{{url('parent/my_student/calendar/' . $value->id )}}" class="btn btn-sm btn-warning">Calendar</a>
+                                            <a href="{{ url('parent/exam_result/' . $value->id) }} "
+                                                class="btn btn-sm btn-primary">Exam Result</a>
+                                            <a href="{{ url('parent/my_student/calendar/' . $value->id) }}"
+                                                class="btn btn-sm btn-warning">Calendar</a>
                                         </td>
                                     </tr>
                                 @endforeach

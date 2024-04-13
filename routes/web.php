@@ -13,6 +13,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\StudentContorller;
 use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\AssignClassTeacherController;
+use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\ClassTimetableController;
 use Illuminate\Support\Facades\Route;
 
@@ -119,10 +120,21 @@ Route::group(['routeMiddleware' => 'admin'], function () {
 
     Route::get('admin/examinations/exam_schedule', [ExaminationsController::class, 'exam_schedule']);
     Route::post('admin/examinations/exam_schedule_insert', [ExaminationsController::class, 'exam_schedule_insert']);
+
     Route::get('admin/examinations/marks_register', [ExaminationsController::class, 'marks_register']);
-
-
     Route::post('admin/examinations/submit_makes_register', [ExaminationsController::class, 'submit_makes_register']);
+    Route::post('admin/examinations/single_submit_makes_register', [ExaminationsController::class, 'single_submit_makes_register']);
+
+    Route::get('admin/examinations/marks_grade/list', [ExaminationsController::class, 'marks_grade']);
+    Route::get('admin/examinations/marks_grade/add', [ExaminationsController::class, 'mark_grade_add']);
+    Route::post('admin/examinations/marks_grade/add', [ExaminationsController::class, 'mark_grade_insert']);
+    Route::get('admin/examinations/marks_grade/edit/{id}', [ExaminationsController::class, 'mark_grade_edit']);
+    Route::post('admin/examinations/marks_grade/edit/{id}', [ExaminationsController::class, 'mark_grade_update']);
+    Route::get('admin/examinations/marks_grade/delete/{id}', [ExaminationsController::class, 'mark_grade_delete']);
+
+    Route::get('admin/attendance/student', [AttendanceController::class, 'AttendanceStudent']);
+    Route::post('admin/attendance/student/save', [AttendanceController::class, 'AttendanceStudentSubmid']);
+    Route::get('admin/attendance/report', [AttendanceController::class, 'AttendanceReport']);
 
 });
 
@@ -142,6 +154,9 @@ Route::group(['routeMiddleware' => 'teacher'], function () {
     Route::get('teacher/my_exam_timetable', [ExaminationsController::class, 'MyExamTimetableTeacher']);
 
     Route::get('teacher/my_calendar', [CalendarController::class, 'MyCalendarTeacher']);
+    Route::get('teacher/marks_register', [ExaminationsController::class, 'marks_register_teacher']);
+    Route::post('teacher/submit_makes_register', [ExaminationsController::class, 'submit_makes_register']);
+    Route::post('teacher/single_submit_makes_register', [ExaminationsController::class, 'single_submit_makes_register']);
 });
 
 Route::group(['routeMiddleware' => 'student'], function () {
@@ -159,6 +174,7 @@ Route::group(['routeMiddleware' => 'student'], function () {
     Route::post('student/account', [UserController::class, 'UpdateMyAccountStudent']);
 
     Route::get('student/my_calendar', [CalendarController::class, 'MyCalendar']);
+    Route::get('student/my_exam_result', [ExaminationsController::class, 'myExamResult']);
 });
 
 Route::group(['routeMiddleware' => 'parent'], function () {
@@ -178,4 +194,5 @@ Route::group(['routeMiddleware' => 'parent'], function () {
     Route::get('parent/exam_timetable/{student_id}', [ExaminationsController::class, 'MyExamTimetableParent']);
 
     Route::get('parent/my_student/calendar/{student_id}', [CalendarController::class, 'myCalenderParent']);
+    Route::get('parent/exam_result/{student_id}', [ExaminationsController::class, 'myExamResultParent']);
 });

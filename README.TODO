@@ -1,0 +1,3 @@
+## FIXME 
+1.My Exam Result กับ My Exam Timetable มันไม่ตรงกัน คือ My Exam Timetable จะแสดงข้อมูลทั้งหมด แต่ My Exam Result 
+แสดงข้อมูลที่่มีการเก็บคะแนนแล้ว ควร แสดงข้อมูลทั้งหมดของ  My Exam Result หรือก็คือควรใช้ฐานข้อมูลเดียวกัน
