@@ -73,7 +73,6 @@
                 </div>
 
                 @include('_message')
-ss
                 <div class="card">
                     <div class="card-header">
                         <h3 class="card-title">Attendance List</h3>
