@@ -47,6 +47,14 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    static public function SearchUser($search)
+    {
+        return self::select('users.*')
+            ->where('users.name', 'like', '%' . $search . '%')
+            ->orWhere('users.last_name', 'like', '%' . $search . '%')
+            ->limit(10)
+            ->get();
+    }
     static public function getAdmin()
     {
         $return = self::select('users.*')
@@ -75,8 +83,6 @@ class User extends Authenticatable
             ->get();
         return $return;
     }
-
-
     static public function getTeacher()
     {
         $return = self::select('users.*', 'class.name as class_name')
@@ -122,7 +128,6 @@ class User extends Authenticatable
             ->paginate(20);
         return $return;
     }
-
     static public function getTeacherStudent($teacher_id)
     {
         $return = self::select('users.*', 'class.name as class_name', 'parent.name as parent_name', 'teacher.name as teacher_name')
@@ -189,7 +194,6 @@ class User extends Authenticatable
             ->paginate(20);
         return $return;
     }
-
     static public function getParent()
     {
         $return = self::select('users.*', 'class.name as class_name')
@@ -232,8 +236,6 @@ class User extends Authenticatable
             ->paginate(20);
         return $return;
     }
-
-
     static public function getSearchStudent()
     {
         // dd(Request::all());
@@ -277,7 +279,6 @@ class User extends Authenticatable
         return $return;
     }
 
-
     static public function getSingle($id)
     {
         return self::find($id);
@@ -300,9 +301,23 @@ class User extends Authenticatable
             return '';
         }
     }
-
+    // public function getHomework()
+    // {
+    //     if (!empty($this->profile_pic) && file_exists(('upload/homework/' . $this->profile_pic))) {
+    //         return url('upload/homework/' . $this->profile_pic);
+    //     } else {
+    //         return '';
+    //     }
+    // }
+    static public function getUser($user_type){
+        return User::select('users.*')
+        ->where('user_type', '=', $user_type)
+        ->where('is_delete', '=', 0)
+        ->get();
+    }
     static public function getStudentClass($class_id)
     {
+
         $return = User::select(
             'users.id',
             'users.name',

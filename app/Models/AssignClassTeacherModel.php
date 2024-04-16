@@ -105,6 +105,7 @@ class AssignClassTeacherModel extends Model
         return $return;
     }
 
+
     static public function getCalendarTeacher($teacher_id)
     // FIXME //! ---------- ตาราง class_subject มันซ้ากับ class_subject_timetable เปลี่ยน class_subject เป็น class_id หรือเปลี่ยน ตอน get class_subject ก็ได้ ต้องไปเปลี่ยนที่ หน้า teacher/my_class_subject/class_timetable
     {

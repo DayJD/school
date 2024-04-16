@@ -94,6 +94,8 @@
                                                 class="btn btn-sm btn-primary">Exam Result</a>
                                             <a href="{{ url('parent/my_student/calendar/' . $value->id) }}"
                                                 class="btn btn-sm btn-warning">Calendar</a>
+                                            <a href="{{ url('parent/my_student/attendance/' . $value->id) }}"
+                                                class="btn btn-sm btn-warning">Attendance</a>
                                         </td>
                                     </tr>
                                 @endforeach

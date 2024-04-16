@@ -65,8 +65,6 @@ class ClassTimetableController extends Controller
 
     public function insert_update(Request $request)
     {
-
-
         ClassSubjectTimetableModel::where('class_id', '=', $request->class_id)
             ->where('subject_id', '=', $request->subject_id)
             ->delete();

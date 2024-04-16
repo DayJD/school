@@ -21,7 +21,7 @@
                     <form method="get">
                         <div class="card-body">
                             <div class="row">
-                                <div class="form-group col-md-2">
+                                <div class="form-group col-md-1">
                                     <label>Student ID</label>
                                     <input type="text" name="student_id"
                                         class="form-control"value="{{ Request::get('student_id') }}" placeholder="Enter ID">
@@ -43,11 +43,16 @@
                                     </select>
                                 </div>
                                 <div class="form-group col-md-2">
-                                    <label for="">Attendance Date</label>
-                                    <input type="date" class="form-control" id="getAttendanceDate" name="attendance_date"
-                                        value="{{ Request::get('attendance_date') }}">
+                                    <label for="">Start Attendance Date</label>
+                                    <input type="date" class="form-control" id="getAttendanceDate" name="start_attendance_date"
+                                        value="{{ Request::get('start_attendance_date') }}">
                                 </div>
                                 <div class="form-group col-md-2">
+                                    <label for="">End Attendance Date</label>
+                                    <input type="date" class="form-control" id="getAttendanceDate" name="end_attendance_date"
+                                        value="{{ Request::get('end_attendance_date') }}">
+                                </div>
+                                <div class="form-group col-md-1">
                                     <label for="">Attendance Type</label>
                                     <select class="form-control" name="attendance_type" id="getAttendanceType">
                                         <option value="">Select Type</option>

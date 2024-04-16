@@ -46,4 +46,15 @@ class ClassModel extends Model
 
         return $return; 
     }
+    static public function getClassStudent($class_id){
+        $return = ClassModel::select('class.*', 'class.name as class_name')
+        ->join('users', 'users.id','class.created_by')
+        ->where('class.is_delete', '=', 0)
+        ->where('class.status', '=', 0)
+        ->where('class.id', '=', $class_id)
+        ->orderBy('class.id', 'asc')
+        ->get();
+
+        return $return; 
+    }
 }

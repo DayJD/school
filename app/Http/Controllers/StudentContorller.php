@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\ClassModel;
+use App\Models\ClassSubjectModel;
+use App\Models\HomeWorkModel;
+use App\Models\SubjectModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -54,7 +57,7 @@ class StudentContorller extends Controller
             $student->admission_date = trim($request->admission_date);
         }
         if (!empty($request->file('profile_pic'))) {
-            
+
             $ext = $request->file('profile_pic')->getClientOriginalExtension();
             $file = $request->file('profile_pic');
             $randomStr = date('Ymdhis') . Str::random(20);
@@ -119,9 +122,8 @@ class StudentContorller extends Controller
             $student->admission_date = trim($request->admission_date);
         }
         if (!empty($request->file('profile_pic'))) {
-            
-            if(!empty($student->getProfile()))
-            {
+
+            if (!empty($student->getProfile())) {
                 unlink('upload/profile/' . $student->profile_pic);
             }
             $ext = $request->file('profile_pic')->getClientOriginalExtension();
@@ -160,10 +162,11 @@ class StudentContorller extends Controller
         }
     }
 
-        //! teacher side work
-        public function MyStudent(){
-            $data['getRecord'] = User::getTeacherStudent(Auth::user()->id);
-            $data['header_title'] = "MyStudent";
-            return view('teacher.my_student', $data);
-        }
-}
+    //! teacher side work
+    public function MyStudent()
+    {
+        $data['getRecord'] = User::getTeacherStudent(Auth::user()->id);
+        $data['header_title'] = "MyStudent";
+        return view('teacher.my_student', $data);
+    }  
+}    
