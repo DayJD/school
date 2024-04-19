@@ -22,8 +22,13 @@
                         <div class="card-body">
                             <div class="form-group">
                                 <label>Class Name</label>
-                                <input type="text" name="name" class="form-control" required
-                                    placeholder="Enter name">
+                                <input type="text" name="name" class="form-control" required placeholder="Enter name">
+                            </div>
+                            <div class="form-group">
+                                <label>Amount (฿)</label>
+                                <input type="number" name="amount" class="form-control" required
+                                    placeholder="Enter Amount To ฿">
+
                             </div>
                             <div class="form-group">
                                 <label>Status</label>

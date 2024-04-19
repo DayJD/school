@@ -27,7 +27,7 @@ class User extends Authenticatable
 
     /**
      * The attributes that should be hidden for serialization.
-     *
+     *user()->user_id);
      * @var array<int, string>
      */
     protected $hidden = [
@@ -47,6 +47,17 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    static public function getTotalUser($user_type)
+    {
+        $return = self::select('users.*')
+            ->where('user_type', '=', $user_type)
+            ->where('is_delete', '=', 0)
+            ->count();
+
+        return $return;
+    }
+
     static public function SearchUser($search)
     {
         return self::select('users.*')
@@ -128,6 +139,21 @@ class User extends Authenticatable
             ->paginate(20);
         return $return;
     }
+    static public function getTeacherStudentCount($teacher_id)
+    {
+        $return = self::select('users.id')
+            ->join('class', 'class.id', '=', 'users.class_id')
+            ->join('assign_class_teacher', 'assign_class_teacher.class_id', '=', 'class.id')
+            ->where('assign_class_teacher.teacher_id', '=', $teacher_id)
+            ->where('assign_class_teacher.is_delete', '=', 0)
+            ->where('assign_class_teacher.status', '=', 0)
+            ->where('users.user_type', '=', 3)
+            ->where('users.is_delete', '=', 0)
+            ->orderBy('users.id', 'desc')
+            ->count();
+        // dd($return);
+        return $return;
+    }
     static public function getTeacherStudent($teacher_id)
     {
         $return = self::select('users.*', 'class.name as class_name', 'parent.name as parent_name', 'teacher.name as teacher_name')
@@ -194,6 +220,36 @@ class User extends Authenticatable
             ->paginate(20);
         return $return;
     }
+    static public function getConllertFeesStudent()
+    {
+        // dd(Request::all());
+        $return = self::select('users.*', 'class.name as class_name', 'class.amount')
+            ->join('class', 'class.id', '=', 'users.class_id')
+            // ->leftJoin('users as parent', 'parent.id', '=', 'users.parent_id')
+            ->where('users.user_type', '=', 3)
+            ->where('users.is_delete', '=', 0);
+
+        if (!empty(Request::get('name'))) {
+            $return = $return->where(function ($query) {
+                $query->where('users.name', 'like', '%' . Request::get('name') . '%')
+                    ->orWhere('users.last_name', 'like', '%' . Request::get('name') . '%');
+            });
+        }
+        if (!empty(Request::get('class_id'))) {
+            $return = $return->where('users.class_id', '=', Request::get('class_id'));
+        }
+        if (!empty(Request::get('student_id'))) {
+            $return = $return->where('users.id', '=', Request::get('student_id'));
+        }
+        $return = $return->orderBy('users.id', 'asc')
+            ->paginate(20);
+        return $return;
+    }
+    static public function getPaidAmount($student_id, $class_id)
+    {
+        return StudentAddFeesModel::getPaidAmount($student_id, $class_id);
+    }
+
     static public function getParent()
     {
         $return = self::select('users.*', 'class.name as class_name')
@@ -278,10 +334,64 @@ class User extends Authenticatable
 
         return $return;
     }
+    static public function getMyStudentCount($parent_id)
+    {
+        $return = self::select('users.id')
+            ->join('users as parent', 'parent.id', '=', 'users.parent_id')
+            ->join('class', 'class.id', '=', 'users.class_id', 'left')
+            ->where('users.user_type', '=', 3)
+            ->where('users.parent_id', '=', $parent_id)
+            ->where('users.is_delete', '=', 0)
+            ->count();
+
+        return $return;
+    }
+
+    static public function getMyStudentIds($parent_id)
+    {
+        $return = self::select('users.id')
+            ->join('users as parent', 'parent.id', '=', 'users.parent_id')
+            ->join('class', 'class.id', '=', 'users.class_id')
+            ->where('users.user_type', '=', 3)
+            ->where('users.parent_id', '=', $parent_id)
+            ->where('users.is_delete', '=', 0)
+            ->get();
+
+        $student_array = [];
+        foreach ($return as $value) {
+            $student_array[] = $value->id;
+        }
+
+        return $student_array;
+    }
+    static public function getMyStudentClassIds($parent_id)
+    {
+        $return = self::select('users.class_id')
+            ->join('users as parent', 'parent.id', '=', 'users.parent_id')
+            ->join('class', 'class.id', '=', 'users.class_id')
+            ->where('users.user_type', '=', 3)
+            ->where('users.parent_id', '=', $parent_id)
+            ->where('users.is_delete', '=', 0)
+            ->get();
+
+        $class_ids = [];
+        foreach ($return as $value) {
+            $class_ids[] = $value->class_id;
+        }
+
+        return $class_ids;
+    }
 
     static public function getSingle($id)
     {
         return self::find($id);
+    }
+    static public function getSingleClass($id)
+    {
+        return self::select('users.name', 'users.last_name', 'class.amount', 'class.name as class_name', 'class.id as class_id', 'users.email')
+            ->join('class', 'class.id', '=', 'users.class_id')
+            ->where('users.id', '=', $id)
+            ->first();
     }
 
     static public function getEmailSingle($email)
@@ -301,19 +411,21 @@ class User extends Authenticatable
             return '';
         }
     }
-    // public function getHomework()
-    // {
-    //     if (!empty($this->profile_pic) && file_exists(('upload/homework/' . $this->profile_pic))) {
-    //         return url('upload/homework/' . $this->profile_pic);
-    //     } else {
-    //         return '';
-    //     }
-    // }
-    static public function getUser($user_type){
+    public function getProfileDirect()
+    {
+        if (!empty($this->profile_pic) && file_exists(('upload/profile/' . $this->profile_pic))) {
+            return url('upload/profile/' . $this->profile_pic);
+        } else {
+            return url('upload/profile/images/default-avatar.png');
+        }
+    }
+
+    static public function getUser($user_type)
+    {
         return User::select('users.*')
-        ->where('user_type', '=', $user_type)
-        ->where('is_delete', '=', 0)
-        ->get();
+            ->where('user_type', '=', $user_type)
+            ->where('is_delete', '=', 0)
+            ->get();
     }
     static public function getStudentClass($class_id)
     {

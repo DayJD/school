@@ -106,6 +106,8 @@
                                                 class="btn btn-warning">Edit</a>
                                             <a href="{{ url('admin/homework/homework/delete/' . $value->id) }}"
                                                 class="btn btn-danger">delete</a>
+                                            <a href="{{ url('admin/homework/homework/submitted/' . $value->id) }}"
+                                                class="btn btn-info">Submitted Homework</a>
                                         </td>
                                     </tr>
                                 @endforeach

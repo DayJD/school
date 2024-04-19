@@ -15,9 +15,10 @@ use App\Http\Controllers\StudentContorller;
 use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\AssignClassTeacherController;
 use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\ChatController;
 use App\Http\Controllers\ClassTimetableController;
 use App\Http\Controllers\CommunicateController;
-use App\Http\Controllers\JsonController;
+use App\Http\Controllers\FeesCollectionController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -30,6 +31,11 @@ Route::get('reset/{token}', [AuthController::class, 'reset']);
 Route::post('reset/{token}', [AuthController::class, 'PostReset']);
 
 
+Route::group(['routeMiddleware' => 'common'], function () {
+    Route::get('chat', [ChatController::class, 'chat']);
+    Route::post('submit_message', [ChatController::class, 'submit_message']);
+
+});
 
 Route::group(['routeMiddleware' => 'admin'], function () {
     Route::get('admin/dashboard', [DashboardController::class, 'dashboard']);
@@ -98,6 +104,8 @@ Route::group(['routeMiddleware' => 'admin'], function () {
 
     Route::get('admin/account', [UserController::class, 'MyAccount']);
     Route::post('admin/account', [UserController::class, 'UpdateMyAccountAdmin']);
+    Route::get('admin/setting', [UserController::class, 'Setting']);
+    Route::post('admin/setting', [UserController::class, 'UpdateSetting']);
 
     Route::get('admin/assign_class_teacher/list', [AssignClassTeacherController::class, 'list']);
     Route::get('admin/assign_class_teacher/add', [AssignClassTeacherController::class, 'add']);
@@ -157,9 +165,20 @@ Route::group(['routeMiddleware' => 'admin'], function () {
     Route::post('admin/homework/homework/edit/{id}', [HomeWorkController::class, 'update']);
     Route::get('admin/homework/homework/delete/{id}', [HomeWorkController::class, 'delete']);
     Route::post('admin/ajax_get_subject', [HomeWorkController::class, 'get_ajax_subject']);
+
+
+    Route::get('admin/homework/homework/submitted/{id}', [HomeWorkController::class, 'Submitted']);
+    Route::get('admin/homework/homework/submitted/{id}', [HomeWorkController::class, 'Submitted']);
+    Route::get('admin/homework/homework/homework_repost', [HomeWorkController::class, 'homework_repost']);
+    Route::get('admin/fees_collection/collection_fees', [FeesCollectionController::class, 'collection_fees']);
+    Route::get('admin/fees_collection/collection_fees/add_fees/{id}', [FeesCollectionController::class, 'collection_fees_add']);
+    Route::post('admin/fees_collection/collection_fees/add_fees/{id}', [FeesCollectionController::class, 'collection_fees_insert']);
+    Route::get('admin/fees_collection/collection_fees_repost', [FeesCollectionController::class, 'collection_fees_repost']);
+
 });
 
 Route::group(['routeMiddleware' => 'teacher'], function () {
+    
     Route::get('teacher/dashboard', [DashboardController::class, 'dashboard']);
 
     Route::get('teacher/change_password', [UserController::class, 'change_password']);
@@ -193,6 +212,9 @@ Route::group(['routeMiddleware' => 'teacher'], function () {
     Route::post('teacher/homework/homework/edit/{id}', [HomeWorkController::class, 'updateTeacher']);
     Route::get('teacher/homework/homework/delete/{id}', [HomeWorkController::class, 'deleteTeacher']);
     Route::post('teacher/ajax_get_subject', [HomeWorkController::class, 'get_ajax_subject_teacher']);
+
+    Route::get('teacher/homework/homework/submitted/{id}', [HomeWorkController::class, 'SubmittedTeacher']);
+
 });
 
 Route::group(['routeMiddleware' => 'student'], function () {
@@ -218,6 +240,14 @@ Route::group(['routeMiddleware' => 'student'], function () {
 
     Route::get('student/my_homework/submit_homework/{id}', [HomeWorkController::class, 'SubmitHomeWorkStudent']);
     Route::post('student/my_homework/submit_homework/{id}', [HomeWorkController::class, 'SubmitHomeWorkStudentInsert']);
+
+    Route::get('student/my_submit_homework', [HomeWorkController::class, 'HomeWorkSubmittingStudent']);
+
+    Route::get('student/collection_fees', [FeesCollectionController::class, 'collection_fees_student']);
+    Route::post('student/collection_fees', [FeesCollectionController::class, 'collection_fees_student_payment']);
+
+    Route::get('student/stripe/payment-error', [FeesCollectionController::class, 'stripe_payment_error']);
+    Route::get('student/stripe/payment-success', [FeesCollectionController::class, 'stripe_payment_success']);
 });
 
 Route::group(['routeMiddleware' => 'parent'], function () {
@@ -242,4 +272,13 @@ Route::group(['routeMiddleware' => 'parent'], function () {
 
 
     Route::get('parent/my_notice_board', [CommunicateController::class, 'myNoticeBoardParent']);
+    Route::get('parent/my_student_notice_board', [CommunicateController::class, 'myNoticeBoardParentStudnet']);
+    Route::get('parent/my_student/homework/{student_id}', [HomeWorkController::class, 'HomeWorkStudentParent']);
+    Route::get('parent/my_student/submitted_homework/{student_id}', [HomeWorkController::class, 'SubmittedHomeWorkStudentParent']);
+
+    Route::get('parent/my_student/collection_fees_student/{student_id}', [FeesCollectionController::class, 'collection_fees_student_parent']);
+    Route::post('parent/my_student/collection_fees_student/{student_id}', [FeesCollectionController::class, 'collection_fees_student_parent_payment']);
+
+    Route::get('parent/stripe/payment-error', [FeesCollectionController::class, 'stripe_payment_error_parent']);
+    Route::get('parent/stripe/payment-success', [FeesCollectionController::class, 'stripe_payment_success_parent']);
 });

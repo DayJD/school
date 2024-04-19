@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\SettingModel;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -17,11 +18,11 @@ class UserController extends Controller
         $data['header_title'] = "My Account";
         if (Auth::user()->user_type == 1) {
             return view('admin.my_account', $data);
-        }elseif(Auth::user()->user_type == 2) {
+        } elseif (Auth::user()->user_type == 2) {
             return view('teacher.my_account', $data);
-        }elseif(Auth::user()->user_type == 3) {
+        } elseif (Auth::user()->user_type == 3) {
             return view('student.my_account', $data);
-        }elseif(Auth::user()->user_type == 4) {
+        } elseif (Auth::user()->user_type == 4) {
             return view('parent.my_account', $data);
         }
     }
@@ -37,14 +38,71 @@ class UserController extends Controller
 
         $account->name = trim($request->name);
         $account->email = trim($request->email);
+        if (!empty($request->file('profile_pic'))) {
+
+            if (!empty($account->getProfile())) {
+                unlink('upload/profile/' . $account->profile_pic);
+            }
+            $ext = $request->file('profile_pic')->getClientOriginalExtension();
+            $file = $request->file('profile_pic');
+            $randomStr = date('Ymdhis') . Str::random(20);
+            $filename = strtolower($randomStr) . '.' . $ext;
+            $file->move('upload/profile', $filename);
+
+            $account->profile_pic = $filename;
+         
+        }
         $account->save();
 
         return redirect()->back()->with('success', "Account Successfully Updeted");
     }
+    public function Setting(Request $request)
+    {
+        $data['getRecord'] = SettingModel::getSingle();
+        $data['header_title'] = "Setting";
+        return view('admin.setting' , $data);
+    }
+    public function UpdateSetting(Request $request)
+    {
+      
+        $setting = SettingModel::getSingle();
+        $setting->paypal_email = trim($request->paypal_email);
+        $setting->stripe_key = trim($request->stripe_key);
+        $setting->stripe_secret = trim($request->stripe_secret);
+        if (!empty($request->file('logo'))) {
+
+            if (!empty($setting->getLogo())) {
+                unlink('upload/setting/' . $setting->logo);
+            }
+            $ext = $request->file('logo')->getClientOriginalExtension();
+            $file = $request->file('logo');
+            $randomStr = date('Ymdhis') . Str::random(20);
+            $filename = strtolower($randomStr) . '.' . $ext;
+            $file->move('upload/setting', $filename);
+            // dd($request->all());
+            $setting->logo = $filename;
+         
+        }
+        if (!empty($request->file('fevicon_icon'))) {
+
+            if (!empty($setting->getFevicon())) {
+                unlink('upload/setting/' . $setting->fevicon_icon);
+            }
+            $ext = $request->file('fevicon_icon')->getClientOriginalExtension();
+            $file = $request->file('fevicon_icon');
+            $randomStr = date('Ymdhis') . Str::random(20);
+            $filename = strtolower($randomStr) . '.' . $ext;
+            $file->move('upload/setting', $filename);
+            $setting->fevicon_icon = $filename;
+        }
+        $setting->save();
+        return redirect()->back()->with('success', "Setting Successfully Updeted");
+
+    }
+
+
     public function UpdateMyAccountTeacher(Request $request)
     {
-
-        
         $id = Auth::user()->id;
         $request->validate([
             'email' => 'required|email|unique:users,email,' . $id,

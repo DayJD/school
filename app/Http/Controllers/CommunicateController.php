@@ -176,4 +176,10 @@ class CommunicateController extends Controller
         $data['haeder_title'] = 'Notice Board';
         return view('parent.my_notice_board', $data);
     }
+    public function myNoticeBoardParentStudnet()
+    {
+        $data['getRecord'] = NoticeBoardModel::getRecordUser(3);
+        $data['haeder_title'] = 'Notice Board';
+        return view('parent.my_notice_board', $data);
+    }
 }

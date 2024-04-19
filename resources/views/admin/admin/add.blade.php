@@ -17,7 +17,7 @@
                     <div class="card-header">
                         <h3 class="card-title">Add admin</h3>
                     </div>
-                    <form method="POST"active="">
+                    <form method="POST"active="" enctype="multipart/form-data">
                         {{ csrf_field() }}
                         <div class="card-body">
                             <div class="form-group">
@@ -33,6 +33,11 @@
                             <div class="form-group">
                                 <label>Password</label>
                                 <input type="password" name="password" required class="form-control" placeholder="Password">
+                            </div>
+                            <div class="form-group">
+                                <label>Profile Pic</label>
+                                <input type="file"  name="profile_pic" class="form-control" accept="image/jpeg, image/png">
+                                <p class="text-danger">{{ $errors->first('profile_pic') }}</p>
                             </div>
                         </div>
                         <div class="card-footer">

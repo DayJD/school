@@ -1,3 +1,36 @@
 ## FIXME 
 1.My Exam Result กับ My Exam Timetable มันไม่ตรงกัน คือ My Exam Timetable จะแสดงข้อมูลทั้งหมด แต่ My Exam Result 
 แสดงข้อมูลที่่มีการเก็บคะแนนแล้ว ควร แสดงข้อมูลทั้งหมดของ  My Exam Result หรือก็คือควรใช้ฐานข้อมูลเดียวกัน
+
+
+
+git checkout -b 
+git add .
+git commit -m "เพิ่มโค้ดใหม่หรือการเปลี่ยนแปลง"
+git push origin new-branch-name
+ใช้คำสั่ง git status เพื่อดูสถานะปัจจุบันของโปรเจกต์:
+
+
+git status
+คุณจะเห็นรายการของไฟล์ที่มีการเปลี่ยนแปลง ซึ่งจะแสดงในส่วน "Changes not staged for commit".
+
+
+เลือกไฟล์ที่คุณต้องการเพิ่มและ commit โดยใช้คำสั่ง git add:
+
+
+git add file1.txt file2.js
+หรือถ้าคุณต้องการเพิ่มทุกไฟล์ที่มีการเปลี่ยนแปลงทั้งหมดในรายการ:
+
+
+git add .
+ทำการ commit ไฟล์ที่คุณเลือกเพื่อเก็บการเปลี่ยนแปลง:
+
+sql
+Copy code
+git commit -m "อธิบายการเปลี่ยนแปลงที่ทำ"
+สุดท้ายใช้คำสั่ง git push เพื่ออัปโหลดการเปลี่ยนแปลงที่คุณได้ commit ไปยัง GitHub repository:
+
+perl
+Copy code
+git push origin branch-name
+ในที่นี้ branch-name คือชื่อของ branch ที่คุณต้องการอัปโหลดไปยัง อาจเป็น master หรือชื่อ branch อื่น ๆ ที่คุณใช้งานอยู่

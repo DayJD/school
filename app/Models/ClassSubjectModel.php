@@ -50,14 +50,25 @@ class ClassSubjectModel extends Model
 
         return $return;
     }
+    static public function MySubjectTotal($class_id)
+    {
+        $return = self::select('class_subject.id')
+        ->join('subject', 'subject.id', '=', 'class_subject.subject_id')
+        ->join('class', 'class.id', '=', 'class_subject.class_id')
+        ->join('users', 'users.id', '=', 'class_subject.created_by')
+        ->where('class_subject.class_id', '=', $class_id)
+        ->where('class_subject.is_delete', '=', 0)
+        ->orderBy('class_subject.id', 'desc')
+        // ->paginate(30);
+        ->count();
+
+        return $return;
+    }
     static public function getSingle($id)
     {
         return self::find($id);
     }
-    // static public function getSingle($classId)
-    // {
-    //     return self::where('class_id', $classId)->first();
-    // }
+    
     static public function getAlreadFirst($class_id, $subject_id)
     {
         return self::where('class_id', $class_id)

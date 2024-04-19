@@ -28,6 +28,11 @@
                                     value="{{ $getRecord->name }}" placeholder="Enter name">
                             </div>
                             <div class="form-group">
+                                <label>Amount (฿)</label>
+                                <input type="number" name="amount" class="form-control" required
+                                value="{{ $getRecord->amount }}" placeholder="Enter Amount">
+                            </div>
+                            <div class="form-group">
                                 <label>Status</label>
                                 <select class="form-control" name="status">
                                     <option {{ ($getRecord->status == 0) ? 'selected' : '' }} value="0">Active</option>

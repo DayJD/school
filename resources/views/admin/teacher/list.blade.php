@@ -40,7 +40,7 @@
                                     <input type="text" name="marital_status" class="form-control"
                                         value="{{ Request::get('marital_status') }}" placeholder="Enter Marital Status">
                                 </div>
-            
+
                                 <div class="form-group col-md-2">
                                     <label>Gender</label>
 
@@ -57,7 +57,7 @@
                                         </option>
                                     </select>
                                 </div>
-                             
+
                                 <div class="form-group col-md-2">
                                     <label>Mobile Number</label>
                                     <input type="text" name="mobile_number" class="form-control"
@@ -126,10 +126,9 @@
                                     <tr>
                                         <td>{{ $value->id }}</td>
                                         <td>
-                                            @if (!empty($value->getProfile()))
-                                                <img src="{{ $value->getProfile() }}"
-                                                    style="width: 50px; height: 50px ; border-radius: 50px"
-                                                    alt="">
+                                            @if (!empty($value->getProfileDirect()))
+                                                <img src="{{ $value->getProfileDirect() }}"
+                                                    style="width: 50px; height: 50px ; border-radius: 50px" alt="">
                                             @endif
                                         </td>
                                         <td>{{ $value->name . ' ' . $value->last_name }}</td>
@@ -159,6 +158,8 @@
                                                 class="btn btn-warning btn-sm">Edit</a>
                                             <a href="{{ url('admin/teacher/delete/' . $value->id) }}"
                                                 class="btn btn-danger btn-sm">delete</a>
+                                            <a href="{{ url('chat?receiver_id=' . base64_encode($value->id)) }}"
+                                                class="btn btn-success">Send Message</a>
                                         </td>
                                     </tr>
                                 @endforeach

@@ -43,7 +43,7 @@
                                 <div
                                     class="form-group col-md-3 p-3 d-flex align-items-md-end justify-content-md-start justify-content-sm-center">
                                     <button type="submit" class="btn btn-primary mr-1">Search</button>
-                                    <a href="{{url('admin/admin/list')}}" class="btn btn-success">Clear</a>
+                                    <a href="{{ url('admin/admin/list') }}" class="btn btn-success">Clear</a>
                                 </div>
                             </div>
                         </div>
@@ -60,6 +60,7 @@
                             <thead>
                                 <tr>
                                     <th style="width: 10px">#</th>
+                                    <th>Image</th>
                                     <th>Name</th>
                                     <th>Email</th>
                                     <th>Created Date</th>
@@ -70,6 +71,12 @@
                                 @foreach ($getRecord as $value)
                                     <tr>
                                         <td>{{ $value->id }}</td>
+                                        <td>
+                                            @if (!empty($value->getProfileDirect()))
+                                                <img src="{{ $value->getProfileDirect() }}"
+                                                    style="width: 50px; height: 50px ; border-radius: 50px" alt="">
+                                            @endif
+                                        </td>
                                         <td>{{ $value->name }}</td>
                                         <td>{{ $value->email }}</td>
                                         <td>{{ date('d-m-Y H:i A', strtotime($value->created_at)) }}</td>
@@ -78,6 +85,8 @@
                                                 class="btn btn-warning">Edit</a>
                                             <a href="{{ url('admin/admin/delete/' . $value->id) }}"
                                                 class="btn btn-danger">delete</a>
+                                            <a href="{{ url('chat?receiver_id=' . base64_encode($value->id)) }}"
+                                                class="btn btn-success">Send Message</a>
                                         </td>
                                     </tr>
                                 @endforeach

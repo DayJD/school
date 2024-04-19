@@ -56,6 +56,7 @@
                                 <tr>
                                     <th style="width: 10px">#</th>
                                     <th>Class Name</th>
+                                    <th>Amount (฿)</th>
                                     <th>Status</th>
                                     <th>Created By</th>
                                     <th>Created Date</th>
@@ -67,8 +68,12 @@
                                     <tr>
                                         <td>{{ $value->id }}</td>
                                         <td>{{ $value->name }}</td>
+                                        <td>{{ $value->amount }}
+                                            @if (!empty($value->amount))
+                                                <span>฿</span>
+                                            @endif
+                                        </td>
                                         <td>
-
                                             @if ($value->status == 0)
                                                 Active
                                             @else
@@ -98,3 +103,4 @@
         </section>
     </div>
 @endsection
+

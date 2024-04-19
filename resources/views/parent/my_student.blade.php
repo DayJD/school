@@ -96,6 +96,12 @@
                                                 class="btn btn-sm btn-warning">Calendar</a>
                                             <a href="{{ url('parent/my_student/attendance/' . $value->id) }}"
                                                 class="btn btn-sm btn-warning">Attendance</a>
+                                            <a href="{{ url('parent/my_student/homework/' . $value->id) }}"
+                                                class="btn btn-sm btn-warning">Homework Stuedent</a>
+                                            <a href="{{ url('parent/my_student/submitted_homework/' . $value->id) }}"
+                                                class="btn btn-sm btn-success">Homework Submitted Stuedent</a>
+                                            <a href="{{ url('parent/my_student/collection_fees_student/' . $value->id) }}"
+                                                class="btn btn-sm btn-success">Collection Fees  Stuedent</a>
                                         </td>
                                     </tr>
                                 @endforeach

@@ -48,7 +48,7 @@
                                         @endif
                                     </select>
                                 </div>
-                               
+
                                 <div
                                     class="form-group col-md-4 d-flex align-items-md-end justify-content-md-start justify-content-sm-center">
                                     <button type="submit" class="btn btn-primary mr-1">Search</button>
@@ -106,6 +106,8 @@
                                                 class="btn btn-warning">Edit</a>
                                             <a href="{{ url('teacher/homework/homework/delete/' . $value->id) }}"
                                                 class="btn btn-danger">delete</a>
+                                            <a href="{{ url('teacher/homework/homework/submitted/' . $value->id) }}"
+                                                class="btn btn-info">Submitted Homework</a>
                                         </td>
                                     </tr>
                                 @endforeach

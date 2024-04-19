@@ -5,7 +5,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ !empty($header_title) ? $header_title . ' -' : '' }} School</title>
-
+    @php
+        $getHeaderSettings = \App\Models\SettingModel::getSingle();
+    @endphp
+    <link rel="icon" type="image/jpg" href="{{ $getHeaderSettings->getFevicon() }}">
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">

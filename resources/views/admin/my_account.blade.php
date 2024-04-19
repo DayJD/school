@@ -32,6 +32,15 @@
                                     placeholder="Enter email">
                                 <p class="text-danger">{{ $errors->first('email') }}</p>
                             </div>
+                            <div class="form-group">
+                                <label>Profile Pic</label>
+                                <input type="file" name="profile_pic" class="form-control" accept="image/jpeg, image/png">
+                                <p class="text-danger">{{ $errors->first('profile_pic') }}</p>
+                                @if (!empty($getRecord->getProfile()))
+                                    <img src="{{ $getRecord->getProfile() }}" style="width: 100px"
+                                        alt="Profile Picture">
+                                @endif
+                            </div>
                         </div>
                         <div class="card-footer">
                             <button type="submit" class="btn btn-primary">Update</button>
