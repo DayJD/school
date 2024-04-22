@@ -1,5 +1,6 @@
 @extends('layouts.app')
 @section('style')
+    <link rel="stylesheet" href="{{ url('public/emojionearea/emojionearea.min.css') }}">
     <style>
         .chat-app .people-list {
             width: 280px;
@@ -92,7 +93,7 @@
             border-bottom: 2px solid #fff;
             height: 500px;
             overflow: auto;
-            
+
         }
 
         .chat .chat-history ul {
@@ -211,6 +212,12 @@
             height: 0
         }
 
+        .emojionearea-editor {
+            height: 40px !important;
+            min-height: 40px !important;
+            font-size: 18px !important;
+        }
+
         @media only screen and (max-width: 767px) {
 
             .chat-list {
@@ -291,16 +298,18 @@
                         <div class="card chat-app">
                             <div id="plist" class="people-list">
                                 <div class="input-group">
-                                    <div class="input-group-prepend">
+                                    <div class="input-group-prepend" id="">
                                         <span class="input-group-text"><i class="fa fa-search"></i></span>
+                                        <input type="text"id="getUserSearch" class="form-control"
+                                            placeholder="Search...">
                                     </div>
-                                    <input type="text" class="form-control" placeholder="Search...">
+                                    <input type="hidden"id="gteReceiverIDDynamic" value="{{ $receiver_id }}">
                                 </div>
-                                <ul class="list-unstyled chat-list mt-2 mb-0">
+                                <ul class="list-unstyled chat-list mt-2 mb-0" id="getUserSearchDynamic">
                                     @include('chat._user')
                                 </ul>
                             </div>
-                            <div class="chat">
+                            <div class="chat" id="getChatMessageAll">
                                 @if (!empty($getReceiver))
                                     @include('chat._message')
                                 @else
@@ -315,30 +324,99 @@
     </div>
 @endsection
 @section('script')
-    <script>
-        $('body').delegate('#submit_message', 'submit', function(e){
+    <script src="{{ url('public/emojionearea/emojionearea.min.js') }}"></script>
+    <script type="text/javascript">
+        $(".emojionearea").emojioneArea({});
+
+        $('body').delegate('.getChatWindow', 'click', function(e) {
+            e.preventDefault();
+            var receiver_id = $(this).attr('id');
+
+            $('#gteReceiverIDDynamic').val(receiver_id);
+            $('.getChatWindow').removeClass('active');
+            $(this).addClass('active');
+
+            $.ajax({
+                type: "POST",
+                url: "{{ url('get_chat_windows') }}",
+                data: {
+                    'receiver_id': receiver_id,
+                    '_token': '{{ csrf_token() }}'
+                },
+                dataType: "json",
+                success: function(data) {
+                    $('#ClearMessage' + receiver_id).hide();
+                    $('#getChatMessageAll').html(data.success);
+                    window.history.pushState("", "", "{{ url('chat?receiver_id=') }}" + data
+                        .receiver_id);
+                    srolldown();
+                    $(".emojionearea").emojioneArea({});
+                },
+                error: function(data) {
+
+                },
+            })
+        });
+
+
+
+        $('body').delegate('#getUserSearch', 'keyup', function(e) {
+            var search = $('#getUserSearch').val();
+
+            var receiver_id = $('#gteReceiverIDDynamic').val();
+            $.ajax({
+                type: "POST",
+                url: "{{ url('get_chat_search_user') }}",
+                data: {
+                    'receiver_id': receiver_id,
+                    'search': search,
+                    '_token': '{{ csrf_token() }}'
+                },
+                dataType: "json",
+                success: function(data) {
+                    $('#getUserSearchDynamic').html(data.success);
+                },
+                error: function(data) {
+
+                },
+            })
+        });
+
+        $('body').delegate('#submit_message', 'submit', function(e) {
             e.preventDefault();
             $.ajax({
                 type: "POST",
                 url: "{{ url('submit_message') }}",
-                data : new FormData(this), 
+                data: new FormData(this),
                 processData: false,
                 contentType: false,
                 dataType: "json",
                 success: function(data) {
                     $('#AppendMessage').append(data.success);
                     $('#ClearMessage').val('');
+                    $('#file_name').val('');
+                    $('#getFileName').html('');
+                    $('.emojionearea-editor').html('');
                     srolldown();
                 },
-                error:function(data) {
+                error: function(data) {
 
                 },
             })
         });
+
         function srolldown() {
             $('.chat-history').animate({
                 scrollTop: $('.chat-history').prop("scrollHeight")
             }, 1000);
         }
+        $('body').delegate('#Openfile', 'click', function(e) {
+            $('#file_name').trigger('click');
+        });
+        $('body').delegate('#file_name', 'change', function(e) {
+            var filename = this.files[0].name;
+            $('#getFilename').html(filename);
+            console.log(filename);
+        });
     </script>
 @endsection

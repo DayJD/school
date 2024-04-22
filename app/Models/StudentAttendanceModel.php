@@ -67,7 +67,7 @@ class StudentAttendanceModel extends Model
         }
     }
 
-    static public function getRecord()
+    static public function getRecord($remove_pagination = 0)
     {
         $return = StudentAttendanceModel::select(
             'student_attendance.*',
@@ -104,8 +104,12 @@ class StudentAttendanceModel extends Model
             $return = $return->where('student_attendance.attendance_type', '=', Request::get('attendance_type'));
         }
 
-        $return =   $return->orderBy('student_attendance.id', 'desc')
-            ->paginate(20);
+        $return =   $return->orderBy('student_attendance.id', 'desc');
+        if(!empty($remove_pagination)){
+            $return = $return->get();
+        }else{
+            $return = $return->paginate(10);
+        }
         return   $return;
     }
 

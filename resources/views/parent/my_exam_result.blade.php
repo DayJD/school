@@ -18,11 +18,20 @@
                 @include('_message')
                 @foreach ($getRecord as $value)
                     <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title"><b>Exam Name : </b>{{ $value['exam_name'] }}</h3>
-                            <br>
-                            <h3 class="card-title"><b>Class Name : </b>{{ $value['class_name'] }}</h3>
+                        <div class="card-header row">
+                            <div class="p-2">
+                                <h3 class="card-title"><b>Exam Name : </b>{{ $value['exam_name'] }}</h3>
+                                <br>
+                                <h3 class="card-title"><b>Class Name : </b>{{ $value['class_name'] }}</h3>
+                            </div>
+                            <div class="ml-auto p-2">
+                                <a class="btn btn-primary" target="_blank"
+                                    href="{{ url('student/my_exam_result/print?exam_id=' . $value['exam_id'] . '&student_id=' . Auth::user()->id) }}">
+                                    Print
+                                </a>
+                            </div>
                         </div>
+
                         <div class="card-body p-0">
                             <table class="table table-striped">
                                 <thead>
@@ -44,7 +53,8 @@
                                     @endphp
                                     @foreach ($value['subject'] as $exam)
                                         @php
-                                            $totle_score_all = $totle_score_all +
+                                            $totle_score_all =
+                                                $totle_score_all +
                                                 $exam['class_work'] +
                                                 $exam['home_work'] +
                                                 $exam['test_work'] +
@@ -84,7 +94,7 @@
                                         </tr>
                                     @endforeach
                                     <tr>
-                                        <td colspan="5"></td>
+                                        <td colspan="4"></td>
                                         <td colspan="1">
                                             @php
                                                 $precentage = ($totle_score_all * 100) / $full_marks_all;

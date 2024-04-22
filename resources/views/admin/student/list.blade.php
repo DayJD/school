@@ -42,8 +42,8 @@
                                 </div>
                                 <div class="form-group col-md-3">
                                     <label>Roll Number</label>
-                                    <input type="text" name="Roll Number" class="form-control"
-                                        value="{{ Request::get('admission_number') }}" placeholder="Enter Roll Number">
+                                    <input type="text" name="roll_number" class="form-control"
+                                        value="{{ Request::get('roll_number') }}" placeholder="Enter Roll Number">
                                 </div>
 
                                 <div class="form-group col-md-3">
@@ -118,6 +118,24 @@
                 <div class="card">
                     <div class="card-header">
                         <h3 class="card-title">Student List (จำนวน : {{ $getRecord->total() }})</h3>
+                        <form method="POST" action="{{ url('admin/student/export_excel') }}"
+                            style="float: right">
+                            {{ csrf_field() }}
+                            <button class="btn btn-primary">Export Excel</button>
+                            <input type="hidden" name="name"
+                                value="{{ Request::get('name') . ' ' . Request::get('lastname') }}">
+                            <input type="hidden" name="email" value="{{ Request::get('email') }}">
+                            <input type="hidden" name="admission_number"
+                                value="{{ Request::get('admission_number') }}">
+                            <input type="hidden" name="roll_number" value="{{ Request::get('roll_number') }}">
+                            <input type="hidden" name="class" value="{{ Request::get('class') }}">
+                            <input type="hidden" name="gender" value="{{ Request::get('gender') }}">
+                            <input type="hidden" name="caste" value="{{ Request::get('caste') }}">
+                            <input type="hidden" name="religion" value="{{ Request::get('religion') }}">
+                            <input type="hidden" name="mobile_number" value="{{ Request::get('mobile_number') }}">
+                            <input type="hidden" name="status" value="{{ Request::get('status') }}">
+                            <input type="hidden" name="date" value="{{ Request::get('date') }}">
+                        </form>
                     </div>
                     <div class="card-body p-0">
                         <table class="table table-striped">

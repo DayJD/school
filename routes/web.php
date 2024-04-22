@@ -21,7 +21,6 @@ use App\Http\Controllers\CommunicateController;
 use App\Http\Controllers\FeesCollectionController;
 use Illuminate\Support\Facades\Route;
 
-
 Route::get('/', [AuthController::class, 'login']);
 Route::post('login', [AuthController::class, 'Authlogin']);
 Route::get('logout', [AuthController::class, 'logout']);
@@ -34,8 +33,10 @@ Route::post('reset/{token}', [AuthController::class, 'PostReset']);
 Route::group(['routeMiddleware' => 'common'], function () {
     Route::get('chat', [ChatController::class, 'chat']);
     Route::post('submit_message', [ChatController::class, 'submit_message']);
-
+    Route::post('get_chat_windows', [ChatController::class, 'get_chat_windows']);
+    Route::post('get_chat_search_user', [ChatController::class, 'get_chat_search_user']);
 });
+
 
 Route::group(['routeMiddleware' => 'admin'], function () {
     Route::get('admin/dashboard', [DashboardController::class, 'dashboard']);
@@ -53,6 +54,7 @@ Route::group(['routeMiddleware' => 'admin'], function () {
     Route::get('admin/teacher/edit/{id}', [TeacherController::class, 'edit']);
     Route::post('admin/teacher/edit/{id}', [TeacherController::class, 'update']);
     Route::get('admin/teacher/delete/{id}', [TeacherController::class, 'delete']);
+    Route::post('admin/teacher/export_excel', [TeacherController::class, 'export_excel_teacher']);
 
     // student
     Route::get('admin/student/list', [StudentContorller::class, 'list']);
@@ -61,7 +63,7 @@ Route::group(['routeMiddleware' => 'admin'], function () {
     Route::get('admin/student/edit/{id}', [StudentContorller::class, 'edit']);
     Route::post('admin/student/edit/{id}', [StudentContorller::class, 'update']);
     Route::get('admin/student/delete/{id}', [StudentContorller::class, 'delete']);
-
+    Route::post('admin/student/export_excel', [StudentContorller::class, 'export_excel']);
     // parent
     Route::get('admin/parent/list', [ParentControllor::class, 'list']);
     Route::get('admin/parent/add', [ParentControllor::class, 'add']);
@@ -72,6 +74,7 @@ Route::group(['routeMiddleware' => 'admin'], function () {
     Route::get('admin/parent/my-student/{id}', [ParentControllor::class, 'myStudent']);
     Route::get('admin/parent/assign_student_parent/{student_id}/{parent_id}', [ParentControllor::class, 'AssignStudentParent']);
     Route::get('admin/parent/assign_student_parent_delete/{student_id}', [ParentControllor::class, 'AssignStudentParentDelete']);
+    Route::post('admin/parent/export_excel', [ParentControllor::class, 'export_excel_parent']);
 
     // class url
     Route::get('admin/class/list', [ClassController::class, 'list']);
@@ -88,6 +91,7 @@ Route::group(['routeMiddleware' => 'admin'], function () {
     Route::get('admin/subject/edit/{id}', [SubjectController::class, 'edit']);
     Route::post('admin/subject/edit/{id}', [SubjectController::class, 'update']);
     Route::get('admin/subject/delete/{id}', [SubjectController::class, 'delete']);
+    
 
     // assign_subject url
     Route::get('admin/assign_subject/list', [ClassSubjectController::class, 'list']);
@@ -134,6 +138,7 @@ Route::group(['routeMiddleware' => 'admin'], function () {
     Route::get('admin/examinations/marks_register', [ExaminationsController::class, 'marks_register']);
     Route::post('admin/examinations/submit_makes_register', [ExaminationsController::class, 'submit_makes_register']);
     Route::post('admin/examinations/single_submit_makes_register', [ExaminationsController::class, 'single_submit_makes_register']);
+    Route::get('admin/examinations/print', [ExaminationsController::class, 'myExamResultPrint']);
 
     Route::get('admin/examinations/marks_grade/list', [ExaminationsController::class, 'marks_grade']);
     Route::get('admin/examinations/marks_grade/add', [ExaminationsController::class, 'mark_grade_add']);
@@ -145,6 +150,7 @@ Route::group(['routeMiddleware' => 'admin'], function () {
     Route::get('admin/attendance/student', [AttendanceController::class, 'AttendanceStudent']);
     Route::post('admin/attendance/student/save', [AttendanceController::class, 'AttendanceStudentSubmid']);
     Route::get('admin/attendance/report', [AttendanceController::class, 'AttendanceReport']);
+    Route::post('admin/attendance/report_export_excel', [AttendanceController::class, 'AttendanceReportExportExcel']); 
 
 
     Route::get('admin/communicate/notice_board/list', [CommunicateController::class, 'NoticeBoard']);
@@ -170,15 +176,17 @@ Route::group(['routeMiddleware' => 'admin'], function () {
     Route::get('admin/homework/homework/submitted/{id}', [HomeWorkController::class, 'Submitted']);
     Route::get('admin/homework/homework/submitted/{id}', [HomeWorkController::class, 'Submitted']);
     Route::get('admin/homework/homework/homework_repost', [HomeWorkController::class, 'homework_repost']);
+
     Route::get('admin/fees_collection/collection_fees', [FeesCollectionController::class, 'collection_fees']);
     Route::get('admin/fees_collection/collection_fees/add_fees/{id}', [FeesCollectionController::class, 'collection_fees_add']);
     Route::post('admin/fees_collection/collection_fees/add_fees/{id}', [FeesCollectionController::class, 'collection_fees_insert']);
     Route::get('admin/fees_collection/collection_fees_repost', [FeesCollectionController::class, 'collection_fees_repost']);
-
+    Route::post('admin/fees_collection/export_collect_fees_repost', [FeesCollectionController::class, 'export_collect_fees_repost']);
 });
 
+
 Route::group(['routeMiddleware' => 'teacher'], function () {
-    
+
     Route::get('teacher/dashboard', [DashboardController::class, 'dashboard']);
 
     Route::get('teacher/change_password', [UserController::class, 'change_password']);
@@ -195,6 +203,7 @@ Route::group(['routeMiddleware' => 'teacher'], function () {
 
     Route::get('teacher/my_calendar', [CalendarController::class, 'MyCalendarTeacher']);
     Route::get('teacher/marks_register', [ExaminationsController::class, 'marks_register_teacher']);
+    Route::get('teacher/marks_register/print', [ExaminationsController::class, 'myExamResultPrint']);
     Route::post('teacher/submit_makes_register', [ExaminationsController::class, 'submit_makes_register']);
     Route::post('teacher/single_submit_makes_register', [ExaminationsController::class, 'single_submit_makes_register']);
 
@@ -204,7 +213,7 @@ Route::group(['routeMiddleware' => 'teacher'], function () {
 
     Route::get('teacher/my_notice_board', [CommunicateController::class, 'myNoticeBoardTeacher']);
 
-    
+
     Route::get('teacher/homework/homework', [HomeWorkController::class, 'HomeWorkTeacher']);
     Route::get('teacher/homework/homework/add', [HomeWorkController::class, 'addTeacher']);
     Route::post('teacher/homework/homework/add', [HomeWorkController::class, 'insertTeacher']);
@@ -214,7 +223,6 @@ Route::group(['routeMiddleware' => 'teacher'], function () {
     Route::post('teacher/ajax_get_subject', [HomeWorkController::class, 'get_ajax_subject_teacher']);
 
     Route::get('teacher/homework/homework/submitted/{id}', [HomeWorkController::class, 'SubmittedTeacher']);
-
 });
 
 Route::group(['routeMiddleware' => 'student'], function () {
@@ -233,6 +241,7 @@ Route::group(['routeMiddleware' => 'student'], function () {
 
     Route::get('student/my_calendar', [CalendarController::class, 'MyCalendar']);
     Route::get('student/my_exam_result', [ExaminationsController::class, 'myExamResult']);
+    Route::get('student/my_exam_result/print', [ExaminationsController::class, 'myExamResultPrint']);
     Route::get('student/my_attendance', [AttendanceController::class, 'myAttendance']);
 
     Route::get('student/my_notice_board', [CommunicateController::class, 'myNoticeBoardStudent']);
@@ -268,6 +277,7 @@ Route::group(['routeMiddleware' => 'parent'], function () {
 
     Route::get('parent/my_student/calendar/{student_id}', [CalendarController::class, 'myCalenderParent']);
     Route::get('parent/exam_result/{student_id}', [ExaminationsController::class, 'myExamResultParent']);
+    Route::get('student/my_exam_result/print', [ExaminationsController::class, 'myExamResultPrint']);
     Route::get('parent/my_student/attendance/{student_id}', [AttendanceController::class, 'AttendanceStudentParent']);
 
 

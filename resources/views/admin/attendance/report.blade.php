@@ -81,6 +81,16 @@
                 <div class="card">
                     <div class="card-header">
                         <h3 class="card-title">Attendance List</h3>
+                        <form method="POST" action="{{ url('admin/attendance/report_export_excel') }}" style="float: right"> 
+                            {{ csrf_field() }}
+                            <button class="btn btn-primary">Export Excel</button>
+                            <input type="hidden" name="student_id" value="{{ Request::get('student_id') }}">
+                            <input type="hidden" name="student_name" value="{{ Request::get('student_name') }}">
+                            <input type="hidden" name="class_id" value="{{ Request::get('class_id') }}">
+                            <input type="hidden" name="start_attendance_date" value="{{ Request::get('start_attendance_date') }}">
+                            <input type="hidden" name="end_attendance_date" value="{{ Request::get('end_attendance_date') }}">
+                            <input type="hidden" name="attendance_type" value="{{ Request::get('attendance_type') }}">
+                        </form>
                     </div>
                     <div class="card-body p-0">
                         <table class="table table-striped">

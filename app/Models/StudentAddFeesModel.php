@@ -16,7 +16,7 @@ class StudentAddFeesModel extends Model
     {
         return StudentAddFeesModel::find($id);
     }
-    static public function getRecord()
+    static public function getRecord($remove_pagination = 0)
     {
         $query = StudentAddFeesModel::select(
             'student_add_fees.*',
@@ -45,8 +45,13 @@ class StudentAddFeesModel extends Model
         if (!empty(Request::get('class_id'))) {
             $query->where('class.id', '=', Request::get('class_id'));
         }
-        $result = $query->orderBy('student_add_fees.id', 'desc')
-            ->paginate(20);
+        $result = $query->orderBy('student_add_fees.id', 'desc');
+
+        if(!empty($remove_pagination)) {
+           $result = $result->get();
+        }else{
+            $result = $result->paginate(20);     
+        }
         // dd($result);
         return $result;
     }

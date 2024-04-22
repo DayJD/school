@@ -17,16 +17,24 @@
                 @include('_message')
                 @foreach ($getRecord as $value)
                     <div class="card">
-                        <div class="card-header">
-                            <h3 class="card-title"><b>Exam Name : </b>{{ $value['exam_name'] }}</h3>
-                            <br>
-                            <h3 class="card-title"><b>Class Name : </b>{{ $value['class_name'] }}</h3>
+                        <div class="card-header row">
+                            <div class="p-2">
+                                <h3 class="card-title"><b>Exam Name : </b>{{ $value['exam_name'] }}</h3>
+                                <br>
+                                <h3 class="card-title"><b>Class Name : </b>{{ $value['class_name'] }}</h3>
+                            </div>
+                            <div class="ml-auto p-2">
+                                <a class="btn btn-primary" target="_blank"
+                                    href="{{ url('student/my_exam_result/print?exam_id=' . $value['exam_id'] . '&student_id=' . Auth::user()->id) }}">
+                                    Print
+                                </a>
+                            </div>
                         </div>
                         <div class="card-body p-0">
                             <table class="table table-striped">
                                 <thead>
                                     <tr>
-                                        <th style="width: 400px">Subject Name</th>
+                                        <th>Subject Name</th>
                                         <th>Class Work</th>
                                         <th>Home Work</th>
                                         <th>Test Work</th>

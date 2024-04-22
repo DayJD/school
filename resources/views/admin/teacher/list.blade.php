@@ -97,6 +97,18 @@
                 <div class="card">
                     <div class="card-header">
                         <h3 class="card-title">teacher List (จำนวน : {{ $getRecord->total() }})</h3>
+                        <form method="POST" action="{{ url('admin/teacher/export_excel') }}" style="float: right">
+                            {{ csrf_field() }}
+                            <button class="btn btn-primary">Export Excel</button>
+                            <input type="hidden" name="name" value="{{ Request::get('name') }}">
+                            <input type="hidden" name="email" value="{{ Request::get('email') }}">
+                            <input type="hidden" name="marital_status" value="{{ Request::get('marital_status') }}">
+                            <input type="hidden" name="gender" value="{{ Request::get('gender') }}">
+                            <input type="hidden" name="status" value="{{ Request::get('status') }}">
+                            <input type="hidden" name="mobile_number" value="{{ Request::get('mobile_number') }}">
+                            <input type="hidden" name="admission_date" value="{{ Request::get('admission_date') }}">
+                            <input type="hidden" name="date" value="{{ Request::get('date') }}">
+                        </form>
                     </div>
                     <div class="card-body p-0">
                         <table class="table table-striped">
@@ -128,7 +140,8 @@
                                         <td>
                                             @if (!empty($value->getProfileDirect()))
                                                 <img src="{{ $value->getProfileDirect() }}"
-                                                    style="width: 50px; height: 50px ; border-radius: 50px" alt="">
+                                                    style="width: 50px; height: 50px ; border-radius: 50px"
+                                                    alt="">
                                             @endif
                                         </td>
                                         <td>{{ $value->name . ' ' . $value->last_name }}</td>

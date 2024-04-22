@@ -4,7 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Request;
 
 class ChatModel extends Model
 {
@@ -47,6 +49,8 @@ class ChatModel extends Model
     }
     static public function getChatUser($user_id)
     {
+
+     
         // ฟังก์ชัน getChatUser($user_id) ใช้เพื่อรับรายชื่อของผู้ใช้ที่เกี่ยวข้องกับการสนทนาของผู้ใช้ที่กำหนดผ่านพารามิเตอร์ $user_id
         // และรวบรวมข้อมูลสำหรับแสดงในรายการแชท โดยใช้ฟังก์ชัน getChatUser.
 
@@ -54,6 +58,14 @@ class ChatModel extends Model
         $getUserChat = self::select("chat.*", DB::raw('(CASE WHEN chat.sender_id = "' . $user_id .  '" THEN chat.receiver_id ELSE chat.sender_id END) AS connect_user_id'))
             ->join('users as sender', 'sender.id', '=', 'chat.sender_id')
             ->join('users as receiver', 'receiver.id', '=', 'chat.receiver_id');
+
+        if (!empty(Request::get('search'))) {
+            $search = Request::get('search');
+            $getUserChat = $getUserChat->where(function ($query) use ($search) {
+                $query->where('sender.name', 'like', '%'.$search.'%')
+                    ->orWhere('receiver.name', 'like', '%'.$search.'%');
+            });
+        }
 
         // กรองแชทเฉพาะรายการล่าสุดของแต่ละคู่แชทและจำนวนข้อความที่ยังไม่ได้อ่าน
         $getUserChat = $getUserChat->whereIn('chat.id', function ($query) use ($user_id) {
@@ -72,7 +84,7 @@ class ChatModel extends Model
 
         // เรียงลำดับแชทตาม ID ล่าสุดและดึงข้อมูลทั้งหมด
         $getUserChat = $getUserChat->orderBy('chat.id', 'desc')->get();
-// dd($getUserChat);
+
         // สร้างอาร์เรย์สำหรับเก็บข้อมูลแต่ละรายการแชท
         $result = array();
         foreach ($getUserChat as $value) {
@@ -93,15 +105,36 @@ class ChatModel extends Model
     {
         // ฟังก์ชัน CountMessage($connect_user_id, $user_id) ใช้เพื่อนับจำนวนข้อความที่ยังไม่ได้อ่านจากผู้ใช้ที่เกี่ยวข้อง
         // โดยระบุเงื่อนไขการค้นหาด้วย sender_id, receiver_id และ status
-        return self::where('sender_id','=', $connect_user_id)
+        return self::where('sender_id', '=', $connect_user_id)
             ->where('receiver_id', '=', $user_id)
             ->where('status', '=', 0)
             ->count();
     }
-    static public function updateCount($sender_id, $receiver_id){
-        return self::where('sender_id','=', $sender_id)
-        ->where('receiver_id', '=', $receiver_id)
-        ->where('status', '=', 0)
-        ->update(['status' =>'1']);
+    static public function updateCount($sender_id, $receiver_id)
+    {
+        return self::where('sender_id', '=', $sender_id)
+            ->where('receiver_id', '=', $receiver_id)
+            ->where('status', '=', 0)
+            ->update(['status' => '1']);
+    }
+
+    public function getFile(){
+        if(!empty($this->file) && file_exists('upload/chat/'.$this->file)){
+            return asset('upload/chat/'.$this->file);
+        }else{
+            return "";
+        }
+    }
+
+    static public function getAllChatUserCount() {
+        $user_id = Auth::user()->id;
+       $return =  self::select('chat.id')
+       ->join('users as sender', 'sender.id' , '=', 'chat.sender_id')
+       ->join('users as receiver', 'receiver.id' , '=', 'chat.receiver_id')
+
+       ->where('chat.receiver_id', '=', $user_id)
+       ->where('chat.status', '=', 0)
+       ->count();
+       return $return;
     }
 }

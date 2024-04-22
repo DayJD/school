@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ExportAttendence;
 use App\Models\AssignClassTeacherModel;
 use App\Models\ClassModel;
 use App\Models\StudentAttendanceModel;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
 
 class AttendanceController extends Controller
 {
@@ -59,6 +61,11 @@ class AttendanceController extends Controller
     
         $data['header_title'] = "Attendance Report";
         return view('admin.attendance.report', $data);
+    }
+    
+    public function AttendanceReportExportExcel(Request $request)
+    {
+        return Excel::download(new ExportAttendence, 'AttendenceReport_' . date('d-m-Y') . '.xls');
     }
     
     public function AttendanceStudentTeacher(Request $request)

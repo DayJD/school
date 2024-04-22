@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ExportCollectFees;
 use App\Models\ClassModel;
 use App\Models\SettingModel;
 use App\Models\StudentAddFeesModel;
@@ -10,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Session;
+use Maatwebsite\Excel\Facades\Excel;
 use Stripe\Stripe;
 
 class FeesCollectionController extends Controller
@@ -33,6 +35,10 @@ class FeesCollectionController extends Controller
         $data['header_title'] = "Collection Fees";
         // dd($data);
         return view('admin.fees_collection.collection_fees_add', $data);
+    }
+    public function export_collect_fees_repost(Request $request){
+
+        return Excel::download(new ExportCollectFees, 'CollectFeesReport_' . date('d-m-Y') . '.xls');
     }
 
     public function collection_fees_repost()

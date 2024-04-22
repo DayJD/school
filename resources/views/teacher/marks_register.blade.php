@@ -200,6 +200,12 @@
                                                         <div class="text-center" style="font-weight: bold">
                                                             <button type="submit"
                                                                 class="btn btn-success mt-4">Save</button>
+                                                            @if (!empty($getMark))
+                                                                <a class="btn btn-primary  mt-4" target="_blank"
+                                                                    href="{{ url('admin/examinations/print?exam_id=' . Request::get('exam_id') . '&student_id=' . $student->id) }}">
+                                                                    Print
+                                                                </a>
+                                                            @endif
                                                             @if (!empty($totleStudentMark))
                                                                 <br>
                                                                 <br>
@@ -211,7 +217,8 @@
                                                                 <br>
 
                                                                 @php
-                                                                    $precentage = ($totleStudentMark * 100) / $totleFullMark;
+                                                                    $precentage =
+                                                                        ($totleStudentMark * 100) / $totleFullMark;
                                                                     $getGrade = App\Models\MarksGradeModel::getGrade(
                                                                         $precentage,
                                                                     );

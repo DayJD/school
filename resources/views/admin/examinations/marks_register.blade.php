@@ -196,9 +196,17 @@
                                                         @endphp
                                                     @endforeach
                                                     <td>
+
                                                         <div class="text-center" style="font-weight: bold">
                                                             <button type="submit"
                                                                 class="btn btn-success mt-4">Save</button>
+                                                            @if (!empty($getMark))
+                                                                <a class="btn btn-primary  mt-4" target="_blank"
+                                                                    href="{{ url('teacher/marks_register/print?exam_id=' . Request::get('exam_id') . '&student_id=' . $student->id) }}">
+                                                                    Print
+                                                                </a>
+                                                            @endif
+
                                                             @if (!empty($totleStudentMark))
                                                                 <br>
                                                                 <br>
@@ -208,7 +216,7 @@
                                                                 <br>
                                                                 Totle Passing Mark : {{ $totlePassingMark }}
                                                                 <br>
-                                                                
+
                                                                 @php
                                                                     $precentage =
                                                                         ($totleStudentMark * 100) / $totleFullMark;

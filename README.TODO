@@ -25,12 +25,13 @@ git add file1.txt file2.js
 git add .
 ทำการ commit ไฟล์ที่คุณเลือกเพื่อเก็บการเปลี่ยนแปลง:
 
-sql
-Copy code
+
 git commit -m "อธิบายการเปลี่ยนแปลงที่ทำ"
 สุดท้ายใช้คำสั่ง git push เพื่ออัปโหลดการเปลี่ยนแปลงที่คุณได้ commit ไปยัง GitHub repository:
 
-perl
-Copy code
-git push origin branch-name
+
+git push origin git commit -m "Add files-name
 ในที่นี้ branch-name คือชื่อของ branch ที่คุณต้องการอัปโหลดไปยัง อาจเป็น master หรือชื่อ branch อื่น ๆ ที่คุณใช้งานอยู่
+
+
+composer require maatwebsite/excel:^3.1 --ignore-platform-req=ext-gd//! เพิ่ม  --ignore-platform-req=ext-gd  เพ่ือติดตั้ง Excal

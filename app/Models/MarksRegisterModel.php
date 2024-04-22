@@ -31,6 +31,7 @@ class MarksRegisterModel extends Model
     {
         return MarksRegisterModel::select(
             'marks_register.*',
+            'e.id as exam_id',
             'e.name as exam_name',
             's.id as subjectID',
             's.name as subject_name'
@@ -47,5 +48,17 @@ class MarksRegisterModel extends Model
         ->where('marks_register.student_id', '=', $student_id)
         ->groupBy('s.id')
         ->get();
+    }
+    static public function getClass($exam_id, $student_id)
+    {
+        return MarksRegisterModel::select(
+            'class.name as class_name'
+        )
+        ->join('exam as e', 'e.id', '=', 'marks_register.exam_id')
+        ->join('class', 'class.id', '=', 'marks_register.class_id')
+        ->join('subject', 'subject.id', '=', 'marks_register.subject_id')
+        ->where('marks_register.exam_id', '=', $exam_id)
+        ->where('marks_register.student_id', '=', $student_id)
+        ->first();
     }
 }

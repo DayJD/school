@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ExportParent;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\ClassModel;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ParentControllor extends Controller
 {
@@ -16,6 +18,11 @@ class ParentControllor extends Controller
         $data['getRecord'] = User::getParent();
         $data['header_title'] = "Parent List";
         return view('admin.parent.list', $data);
+    }
+    public function export_excel_parent(Request $request)
+    {
+        // dd($request);
+        return Excel::download(new ExportParent, 'ParentReport_' . date('d-m-Y') . '.xls');
     }
     public function add()
     {

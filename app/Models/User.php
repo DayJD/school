@@ -7,6 +7,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Request;
 
 class User extends Authenticatable
@@ -66,6 +67,11 @@ class User extends Authenticatable
             ->limit(10)
             ->get();
     }
+    static public function OnlineUer($user_id)
+    {
+        return Cache::has('OnlineUer' . $user_id);
+    }
+
     static public function getAdmin()
     {
         $return = self::select('users.*')
@@ -94,7 +100,7 @@ class User extends Authenticatable
             ->get();
         return $return;
     }
-    static public function getTeacher()
+    static public function getTeacher($remove_pagination = 0)
     {
         $return = self::select('users.*', 'class.name as class_name')
             ->join('class', 'class.id', '=', 'users.class_id', 'left')
@@ -135,8 +141,12 @@ class User extends Authenticatable
             $return = $return->whereDate('users.created_at', '=', Request::get('date'));
         }
 
-        $return = $return->orderBy('users.id', 'desc')
-            ->paginate(20);
+        $return = $return->orderBy('users.id', 'desc');
+        if (!empty($remove_pagination)) {
+            $return = $return->get();
+        } else {
+            $return = $return->paginate(20);
+        }
         return $return;
     }
     static public function getTeacherStudentCount($teacher_id)
@@ -172,7 +182,7 @@ class User extends Authenticatable
         // dd($return->toArray());
         return $return;
     }
-    static public function getStudent()
+    static public function getStudent($remove_pagination = 0)
     {
         $return = self::select('users.*', 'class.name as class_name', 'parent.name as parent_name', 'parent.last_name as parent_last_name')
             ->join('class', 'class.id', '=', 'users.class_id', 'left')
@@ -216,8 +226,12 @@ class User extends Authenticatable
             $return = $return->whereDate('users.date_of_birth', '=', Request::get('date_of_birth'));
         }
 
-        $return = $return->orderBy('users.id', 'desc')
-            ->paginate(20);
+        $return = $return->orderBy('users.id', 'desc');
+        if (!empty($remove_pagination)) {
+            $return = $return->get();
+        } else {
+            $return = $return->paginate(20);
+        }
         return $return;
     }
     static public function getConllertFeesStudent()
@@ -250,7 +264,7 @@ class User extends Authenticatable
         return StudentAddFeesModel::getPaidAmount($student_id, $class_id);
     }
 
-    static public function getParent()
+    static public function getParent($remove_pagination = 0)
     {
         $return = self::select('users.*', 'class.name as class_name')
             ->join('class', 'class.id', '=', 'users.class_id', 'left')
@@ -288,8 +302,12 @@ class User extends Authenticatable
             $return = $return->whereDate('users.created_at', '=', Request::get('date'));
         }
 
-        $return = $return->orderBy('users.id', 'desc')
-            ->paginate(20);
+        $return = $return->orderBy('users.id', 'desc');
+        if (!empty($remove_pagination)) {
+            $return = $return->get();
+        } else {
+            $return = $return->paginate(20);
+        }
         return $return;
     }
     static public function getSearchStudent()

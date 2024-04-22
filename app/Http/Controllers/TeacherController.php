@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ExportTeacher;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\ClassModel;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
-
+use Maatwebsite\Excel\Facades\Excel;
 
 class TeacherController extends Controller
 {
@@ -16,6 +17,11 @@ class TeacherController extends Controller
         $data['getRecord'] = User::getTeacher();
         $data['header_title'] = "Teacher List";
         return view('admin.teacher.list', $data);
+    }
+    public function export_excel_teacher(Request $request)
+    {
+        // dd($request);
+        return Excel::download(new ExportTeacher, 'TeacherReport_' . date('d-m-Y') . '.xls');
     }
 
     public function add()
